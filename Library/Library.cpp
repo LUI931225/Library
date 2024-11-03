@@ -22,6 +22,10 @@ bool isValidId(const std::string& id) {
     return std::regex_match(id, idPattern);
 }
 
+void sortBooks(std::list<Book>& books) {
+    books.sort([](const Book& a, const Book& b) { return a.id < b.id; });
+}
+
 void addBook(std::list<Book>& books) {
     Book book;
     std::cout << "輸入書名: ";
@@ -36,7 +40,8 @@ void addBook(std::list<Book>& books) {
         }
     } while (!isValidId(book.id));
     books.push_back(book);
-    std::cout << "圖書已成功添加。\n";
+    sortBooks(books); // 添加新圖書後自動排序
+    std::cout << "圖書已成功添加並排序。\n";
 }
 
 void removeBook(std::list<Book>& books, std::forward_list<Borrower>& borrowers) {
@@ -74,11 +79,6 @@ void displayBooks(const std::list<Book>& books) {
     for (const auto& book : books) {
         std::cout << "書名: " << book.title << ", 作者: " << book.author << ", 圖書編號: " << book.id << '\n';
     }
-}
-
-void sortBooks(std::list<Book>& books) {
-    books.sort([](const Book& a, const Book& b) { return a.id < b.id; });
-    std::cout << "圖書已按圖書編號排序。\n";
 }
 
 void addBorrower(std::forward_list<Borrower>& borrowers) {
@@ -154,15 +154,14 @@ int main() {
     do {
         std::cout << "圖書館管理系統\n";
         std::cout << "1. 添加新圖書\n";
-        std::cout << "2. 刪除圖書\n";
-        std::cout << "3. 搜索圖書\n";
-        std::cout << "4. 顯示所有圖書\n";
-        std::cout << "5. 排序圖書\n";
-        std::cout << "6. 添加新借閱者\n";
-        std::cout << "7. 刪除借閱者\n";
-        std::cout << "8. 搜索借閱者\n";
-        std::cout << "9. 顯示所有借閱者\n";
-        std::cout << "10. 退出\n";
+        std::cout << "2. 刪除指定圖書編號\n";
+        std::cout << "3. 搜索指定圖書編號\n";
+        std::cout << "4. 顯示所有圖書編號\n";
+        std::cout << "5. 添加新借閱者\n";
+        std::cout << "6. 刪除指定姓名借閱者\n";
+        std::cout << "7. 搜索指定姓名借閱者\n";
+        std::cout << "8. 列出所有借閱者及其借閱的圖書\n";
+        std::cout << "9. 退出\n";
         std::cout << "輸入你的選擇: ";
         std::cin >> choice;
         std::cin.ignore(); // 忽略緩衝區中的換行符
@@ -180,26 +179,23 @@ int main() {
             displayBooks(books);
             break;
         case 5:
-            sortBooks(books);
-            break;
-        case 6:
             addBorrower(borrowers);
             break;
-        case 7:
+        case 6:
             removeBorrower(borrowers);
             break;
-        case 8:
+        case 7:
             searchBorrower(borrowers);
             break;
-        case 9:
+        case 8:
             displayBorrowers(borrowers);
             break;
-        case 10:
+        case 9:
             std::cout << "退出...\n";
             break;
         default:
             std::cout << "無效的選擇，請重試。\n";
         }
-    } while (choice != 10);
+    } while (choice != 9);
     return 0;
 }
